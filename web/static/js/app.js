@@ -158,16 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     room_id: roomID
                 };
                 socket.send(JSON.stringify(msg));
-
-                if (!firstMessageSent) {
-                    const noMessagesDiv = document.getElementById('no-messages'); // Убедитесь, что у вас есть элемент с id="no-messages"
-                    if (noMessagesDiv) {
-                        noMessagesDiv.style.display = 'none'; // Скрыть сообщение о пустом списке
-                    }
-                    firstMessageSent = true;
-                }
-
-                appendMessage("Вы:", message);
+                appendMessage("Вы:", message, new Date().toLocaleString());
                 messageInput.value = '';
             }
         });

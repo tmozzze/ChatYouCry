@@ -128,6 +128,8 @@ func InitCipher(hashedSharedKey []byte, algorithmName, mode, padding string) *al
 	// Инициализация выбранного алгоритма
 	var symmetricAlgorithm algorithm.SymmetricAlgorithm
 	switch algorithmName {
+	case "magenta":
+		symmetricAlgorithm = algorithm.NewMagenta()
 	case "rc5":
 		symmetricAlgorithm = algorithm.NewRC5()
 	default:

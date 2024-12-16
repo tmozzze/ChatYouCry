@@ -119,7 +119,7 @@ func WebSocketHandler(c *gin.Context) {
 				decrypted, err := cipherContext.Decrypt(encrypted)
 				if err != nil {
 					log.Printf("Ошибка расшифровки сообщения от %s: %v", senderID, err)
-					decrypted = []byte("[не удалось расшифровать]")
+					decrypted = []byte("Файл загружен")
 				}
 				content = decrypted
 			} else {

@@ -127,7 +127,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Secret Chat</h1>
+        <h1>ChatYouCry</h1>
 
         <!-- Кнопка выхода -->
         <a href="/messenger/lobby" class="btn btn-danger mb-3">Выйти</a>
@@ -150,15 +150,7 @@
             </div>
         </div>
 
-        <h2>Загрузить файл</h2>
-        <form id="file-upload-form" enctype="multipart/form-data">
-            <div class="input-group mb-3">
-                <input type="file" id="file-input" class="form-control" name="file" aria-label="Upload File" required>
-                <div class="input-group-append">
-                    <button class="btn btn-success" id="upload-file-button" type="submit">Загрузить</button>
-                </div>
-            </div>
-        </form>
+        
 
         <!-- Раздел для отображения сообщений -->
         <h2>Сообщения</h2>
@@ -175,6 +167,16 @@
                 <p>Нет сообщений в этой комнате.</p>
             {{end}}
         </div>
+
+        <h2>Загрузить файл</h2>
+        <form id="file-upload-form" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <input type="file" id="file-input" class="form-control" name="file" aria-label="Upload File" required>
+                <div class="input-group-append">
+                    <button class="btn btn-success" id="upload-file-button" type="submit">Загрузить</button>
+                </div>
+            </div>
+        </form>
 
         <h2>Файлы</h2>
         <div id="files">

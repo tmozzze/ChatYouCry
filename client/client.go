@@ -50,7 +50,7 @@ func main() {
 	var prime *big.Int
 	if roomID == "" {
 		// Создание комнаты с выбором алгоритма, режима и набивки
-		fmt.Print("Выберите алгоритм (loki97 или rc5): ")
+		fmt.Print("Выберите алгоритм (magenta или rc5): ")
 		algorithmName, _ = reader.ReadString('\n')
 		algorithmName = strings.TrimSpace(algorithmName)
 
@@ -68,7 +68,7 @@ func main() {
 
 		// Создание комнаты
 		createRoomResp, err := client.CreateRoom(context.Background(), &chatpb.CreateRoomRequest{
-			Algorithm: algorithmName, // "loki97" или "rc5"
+			Algorithm: algorithmName, // "magenta" или "rc5"
 			Mode:      mode,
 			Padding:   padding,
 			Prime:     primeHex,
@@ -504,6 +504,8 @@ func initCipher(hashedSharedKey []byte, cipherContext **algorithm.CryptoSymmetri
 	var symmetricAlgorithm algorithm.SymmetricAlgorithm
 	if algorithmName == "rc5" {
 		symmetricAlgorithm = algorithm.NewRC5()
+	} else if algorithmName == "magenta" {
+		symmetricAlgorithm = algorithm.NewMagenta()
 	} else {
 		log.Fatalf("Неизвестный алгоритм: %s", algorithmName)
 	}
