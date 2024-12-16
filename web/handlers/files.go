@@ -16,9 +16,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	chatpb "github.com/lbgsct/cryptokurs/proto/chatpb"
-	"github.com/lbgsct/cryptokurs/web/grpcclient"
 	_ "github.com/lib/pq"
+	chatpb "github.com/tmozzze/ChatYouCry/proto/chatpb"
+	"github.com/tmozzze/ChatYouCry/web/grpcclient"
 )
 
 // CipherContext интерфейс для шифрования и дешифрования
@@ -277,7 +277,6 @@ func ListFilesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, files)
 }
 
-// DownloadFileHandler обрабатывает скачивание файла по имени
 // DownloadFileHandler обрабатывает скачивание файла с асинхронным дешифрованием
 func DownloadFileHandler(c *gin.Context) {
 	roomID := c.Query("room_id")

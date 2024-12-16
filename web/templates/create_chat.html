@@ -1,58 +1,152 @@
-<!-- web/templates/create_chat.html -->
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Создать чат</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    <script src="/static/js/app.js" defer></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Глобальные стили */
+        body {
+            background-color: #121212; /* Темный фон */
+            color: #e0e0e0; /* Светлый текст */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            color: #f0f0f0; /* Светлый заголовок */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Форма создания комнаты */
+        .form-group label {
+            color: #f0f0f0; /* Светлый текст для лейблов */
+        }
+
+        .form-control {
+            background-color: #1e1e1e; /* Темный фон для полей ввода */
+            color: #e0e0e0; /* Светлый текст для полей ввода */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .form-control:focus {
+            background-color: #333; /* Темный фон при фокусе */
+            color: #ffffff; /* Светлый текст при фокусе */
+            border-color: #90caf9; /* Синяя рамка при фокусе */
+        }
+
+        /* Кнопки */
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #1e88e5; /* Синяя кнопка */
+            border-color: #1e88e5;
+            color: #ffffff; /* Светлый текст на кнопке */
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0; /* Темно-синяя кнопка при наведении */
+            border-color: #1565c0;
+        }
+
+        .btn-secondary {
+            background-color: #424242; /* Серая кнопка */
+            border-color: #424242;
+            color: #ffffff; /* Светлый текст на кнопке */
+        }
+
+        .btn-secondary:hover {
+            background-color: #333; /* Темно-серая кнопка при наведении */
+            border-color: #333;
+        }
+
+        /* Ошибки */
+        .alert-danger {
+            background-color: #b71c1c; /* Красный фон для ошибок */
+            color: #ffffff; /* Светлый текст для ошибок */
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Контейнер */
+        .container {
+            margin-top: 40px;
+        }
+
+        /* Отступы для кнопок */
+        .mt-3, .mt-4 {
+            margin-top: 20px !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Создание новой чат-комнаты</h1>
+    <div class="container mt-5">
+        <h1 class="text-center">Создание новой чат-комнаты</h1>
 
-    <!-- Кнопка выхода -->
-    <a href="/messenger/lobby">Выйти</a>
+        <!-- Кнопка возврата в лобби -->
+        <div class="container mt-4">
+            <a href="/messenger/lobby" class="btn btn-secondary">Назад в лобби</a>
+        </div>
 
-    <!-- Отображение ошибок -->
-    <div id="chat-message">
-        {{if .error}}
-            <p style="color: red;">{{.error}}</p>
-        {{end}}
+        <!-- Отображение ошибок -->
+        <div id="chat-message" class="mb-3">
+            {{if .error}}
+                <div class="alert alert-danger">{{.error}}</div>
+            {{end}}
+        </div>
+
+        <!-- Форма создания комнаты -->
+        <form id="create-chat-form" action="/messenger/create_chat" method="post">
+            <div class="form-group">
+                <label for="algorithm">Алгоритм:</label>
+                <select name="algorithm" id="algorithm" class="form-control" required>
+                    <option value="rc5">RC5</option>
+                    <option value="magenta"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mode">Режим:</label>
+                <select name="mode" id="mode" class="form-control" required>
+                    <option value="ECB">ECB</option>
+                    <option value="CBC">CBC</option>
+                    <option value="CFB">CFB</option>
+                    <option value="OFB">OFB</option>
+                    <option value="CTR">CTR</option>
+                    <option value="RandomDelta">Random Delta</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="padding">Набивка:</label>
+                <select name="padding" id="padding" class="form-control" required>
+                    <option value="Zeros">Zeros</option>
+                    <option value="ANSIX923">ANSIX923</option>
+                    <option value="PKCS7">PKCS7</option>
+                    <option value="ISO10126">ISO10126</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="invitee_username">Имя пользователя для приглашения:</label>
+                <input type="text" name="invitee_username" id="invitee_username" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Создать комнату</button>
+        </form>
     </div>
-
-    <!-- Форма создания комнаты -->
-    <h2>Создать чат-комнату</h2>
-    <form id="create-chat-form" action="/messenger/create_chat" method="post">
-        <label for="algorithm">Алгоритм:</label>
-        <select name="algorithm" id="algorithm" required>
-            <option value="loki97">Loki97</option>
-            <option value="rc5">RC5</option>
-        </select><br>
-
-        <label for="mode">Режим:</label>
-        <select name="mode" id="mode" required>
-            <option value="ECB">ECB</option>
-            <option value="CBC">CBC</option>
-            <option value="CFB">CFB</option>
-            <option value="OFB">OFB</option>
-            <option value="CTR">CTR</option>
-            <option value="RandomDelta">Random Delta</option>
-        </select><br>
-
-        <label for="padding">Набивка:</label>
-        <select name="padding" id="padding" required>
-            <option value="Zeros">Zeros</option>
-            <option value="ANSIX923">ANSIX923</option>
-            <option value="PKCS7">PKCS7</option>
-            <option value="ISO10126">ISO10126</option>
-        </select><br>
-
-        <!-- Новое поле для имени пользователя для приглашения -->
-        <label for="invitee_username">Имя пользователя для приглашения:</label>
-        <input type="text" name="invitee_username" id="invitee_username" required><br>
-
-        <button type="submit">Создать комнату</button>
-    </form>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

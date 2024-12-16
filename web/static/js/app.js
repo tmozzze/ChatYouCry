@@ -135,6 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString('ru-RU', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
     // Обработка отправки сообщения через WebSocket
     if (sendMessageButton) {
         sendMessageButton.addEventListener('click', () => {
@@ -145,8 +157,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     content: message,
                     room_id: roomID
                 };
-                socket.send(JSON.stringify(msg));   //теперь отправка через json
-                appendMessage("Вы", message);
+                socket.send(JSON.stringify(msg));
+
+                if (!firstMessageSent) {
+                    const noMessagesDiv = document.getElementById('no-messages'); // Убедитесь, что у вас есть элемент с id="no-messages"
+                    if (noMessagesDiv) {
+                        noMessagesDiv.style.display = 'none'; // Скрыть сообщение о пустом списке
+                    }
+                    firstMessageSent = true;
+                }
+
+                appendMessage("Вы:", message);
                 messageInput.value = '';
             }
         });
@@ -305,27 +326,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция подключения к WebSocket
     function connectWebSocket(roomID) {
-        console.log("ПРИВЕТ СОЕДИНЕНИЕ WS");
-        socket = new WebSocket(`ws://${window.location.host}/messenger/ws?room_id=${roomID}`);
+        console.log("ws normalno");
+        if (!socket) {
+            socket = new WebSocket(`ws://${window.location.host}/messenger/ws?room_id=${roomID}`);
 
-        socket.onopen = function(event) {
-            console.log("WebSocket соединение установлено");
-        };
+            socket.onopen = function(event) {
+                console.log("WebSocket соединение установлено");
+            };
 
-        socket.onmessage = function(event) {
-            console.log("ПРИВЕТ СОЕДИНЕНИЕ WS");
-            const message = event.data;
-            const data = JSON.parse(event.data);
-            console.log(message);
-            console.log(data);
-            if (data.type === "error") {
-                alert(`Ошибка: ${data.message}`);
-            } else if (data.type === "chat_deleted") {
-                showNotification('Чат удалён', 'Комната, в которой вы находитесь, была удалена.', 'warning');
-                window.location.href = '/messenger/lobby'; // Перенаправление на лобби
-            }
-            appendMessage("Другой пользователь", message);
-        };
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data); // Разбираем JSON
+            
+                if (data.type === "chat") {
+                    const { sender, content, timestamp } = data; // Извлекаем отправителя, сообщение и время
+                    appendMessage(sender, content, timestamp);
+                } else if (data.type === "chat_deleted") {
+                    showNotification('Чат удалён', 'Комната, в которой вы находитесь, была удалена.', 'warning');
+                    window.location.href = '/messenger/lobby';
+                }
+            };
+        }
+        
 
         socket.onclose = function(event) {
             console.log("WebSocket соединение закрыто");
@@ -337,10 +358,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Функция добавления сообщения в раздел сообщений
-    function appendMessage(sender, message) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = `${sender}: ${message}`;
-        messagesDiv.appendChild(messageElement);
+    // Функция добавления сообщения в раздел сообщений
+    function appendMessage(sender, message, timestamp = new Date().toLocaleString()) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message-item');
+    
+        // Пример структуры для отображения сообщения
+        messageElement.innerHTML = `
+            <div class="message-header">
+                <strong>${sender}</strong> <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: gray;">${timestamp}</span>
+            </div>
+        `;
+    
+        messagesDiv.prepend(messageElement);
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
+
 
 });

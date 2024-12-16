@@ -12,9 +12,9 @@ import (
 	"time"
 
 	// Импорт пакета algorithm
-	"github.com/lbgsct/cryptokurs/algorithm"
-	chatpb "github.com/lbgsct/cryptokurs/proto/chatpb"
-	"github.com/lbgsct/cryptokurs/web/grpcclient"
+	"github.com/tmozzze/ChatYouCry/algorithm"
+	chatpb "github.com/tmozzze/ChatYouCry/proto/chatpb"
+	"github.com/tmozzze/ChatYouCry/web/grpcclient"
 
 	"github.com/gin-gonic/gin"
 )
@@ -208,7 +208,6 @@ func ListInvitationsHandler(c *gin.Context) {
 }
 
 // RespondInvitationHandler обрабатывает принятие или отклонение приглашения
-// RespondInvitationHandler обрабатывает принятие или отклонение приглашения
 func RespondInvitationHandler(c *gin.Context) {
 	invitationIDStr := c.PostForm("id")
 	action := strings.ToLower(c.PostForm("action")) // "accepted" или "declined"
@@ -387,6 +386,14 @@ func RespondInvitationHandler(c *gin.Context) {
 		if err != nil {
 			log.Printf("Database error while updating invitation status: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обновления статуса приглашения"})
+			return
+		}
+
+		// Удаляем чат у отправителя
+		_, err = db.ExecContext(context.Background(), "DELETE FROM chat_participants WHERE chat_id=$1 AND user_id=$2", chatID, senderID)
+		if err != nil {
+			log.Printf("Error deleting chat for sender: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка удаления чата у отправителя"})
 			return
 		}
 

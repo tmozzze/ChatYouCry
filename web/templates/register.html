@@ -5,6 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Регистрация - Secret Chat</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Глобальные стили */
+        body {
+            background-color: #121212; /* Темный фон */
+            color: #e0e0e0; /* Светлый текст */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            color: #f0f0f0; /* Светлый заголовок */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Форма регистрации */
+        .form-group label {
+            color: #f0f0f0; /* Светлый текст для лейблов */
+        }
+
+        .form-control {
+            background-color: #1e1e1e; /* Темный фон для полей ввода */
+            color: #e0e0e0; /* Светлый текст в полях ввода */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 20px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #1e88e5; /* Синяя рамка при фокусе */
+            background-color: #1e1e1e; /* Сохраняем темный фон */
+            color: #e0e0e0; /* Сохраняем светлый текст */
+        }
+
+        /* Кнопки */
+        .btn {
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #1e88e5; /* Синяя кнопка */
+            border-color: #1e88e5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0; /* Темно-синяя кнопка при наведении */
+            border-color: #1565c0;
+        }
+
+        /* Сообщения об ошибках */
+        .text-danger {
+            color: #e53935; /* Красный цвет для ошибок */
+        }
+
+        /* Ссылки */
+        a {
+            color: #90caf9; /* Синий цвет ссылок */
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #ffffff; /* Светлый цвет при наведении */
+        }
+
+        /* Модальное окно */
+        .modal-content {
+            background-color: #1e1e1e; /* Темный фон модального окна */
+            color: #e0e0e0; /* Светлый текст */
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #333;
+        }
+
+        .modal-title {
+            color: #f0f0f0; /* Светлый заголовок модального окна */
+        }
+
+        .modal-body p {
+            color: #e0e0e0; /* Светлый текст в теле модального окна */
+        }
+
+        .modal-footer .btn-primary {
+            background-color: #1e88e5; /* Синяя кнопка в модальном окне */
+            border-color: #1e88e5;
+        }
+
+        .modal-footer .btn-primary:hover {
+            background-color: #1565c0; /* Темно-синяя кнопка при наведении */
+            border-color: #1565c0;
+        }
+
+        /* Контейнер */
+        .container {
+            margin-top: 40px;
+            max-width: 400px;
+        }
+
+        /* Отступы */
+        .mt-3, .mt-4 {
+            margin-top: 20px !important;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">

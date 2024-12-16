@@ -147,9 +147,16 @@ func WebSocketHandler(c *gin.Context) {
 		var msg map[string]interface{}
 		err := conn.ReadJSON(&msg)
 		if err != nil {
+			if websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Println("Соединение закрыто клиентом:", err)
+				break
+			}
 			log.Println("Ошибка при чтении сообщения:", err)
 			break
 		}
+
+		// Обработка входящего сообщения
+		log.Printf("Получено сообщение: %+v\n", msg)
 
 		msgType, ok := msg["type"].(string)
 		if !ok {

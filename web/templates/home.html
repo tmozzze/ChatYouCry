@@ -1,6 +1,5 @@
-<!-- web/templates/landing.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,45 +7,56 @@
     <style>
         /* Глобальные стили */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f7f7f7;
+            background-color: #121212; /* Темный фон */
+            color: #e0e0e0; /* Светлый текст */
         }
+
         .container {
             text-align: center;
         }
+
         h1 {
-            color: #333;
+            color: #f0f0f0; /* Светлый заголовок */
+            font-size: 2.5rem;
+            margin-bottom: 30px;
         }
+
         /* Стили для кнопок-ссылок */
         .login-link,
         .register-link {
             display: inline-block;
             margin: 10px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-decoration: none;
             color: #fff;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
             font-size: 16px;
+            border: none;
+            cursor: pointer;
         }
+
         .login-link {
-            background-color: #af1212;
-            border: 1px solid #af1212;
+            background-color: #1e88e5; /* Красный цвет для входа */
         }
+
         .register-link {
-            background-color: #1565c0;
-            border: 1px solid #1565c0;
+            background-color: #1e88e5; /* Синий цвет для регистрации */
         }
-        .login-link:hover,
+
+        .login-link:hover {
+            background-color: #1565c0; /* Темно-красный при наведении */
+        }
+
         .register-link:hover {
-            background-color: #fff;
-            color: #333;
+            background-color: #1565c0; /* Темно-синий при наведении */
         }
     </style>
 </head>

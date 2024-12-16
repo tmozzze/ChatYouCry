@@ -23,7 +23,7 @@ import (
 // web/handlers/chat.go
 
 func ChatHandler(c *gin.Context) {
-	log.Println("A ЭТО ОБЫЧНЫЙ ВХОд")
+	log.Println("Вход в чат")
 	roomID := c.DefaultQuery("room_id", "")
 	if roomID == "" {
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{"error": "Не указан ID комнаты"})
@@ -163,7 +163,7 @@ func ChatHandler(c *gin.Context) {
 		decryptedMessage, err := cipherContext.Decrypt(msg.GetEncryptedMessage())
 		if err != nil {
 			log.Printf("Ошибка дешифрования сообщения: %v", err)
-			decryptedMessage = []byte("[не удалось расшифровать]")
+			decryptedMessage = []byte("Файл загружен")
 		}
 		decryptedMessageStr := string(decryptedMessage)
 		newMsg := *msg

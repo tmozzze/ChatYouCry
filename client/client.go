@@ -502,9 +502,7 @@ func initCipher(hashedSharedKey []byte, cipherContext **algorithm.CryptoSymmetri
 
 	// Инициализируем выбранный алгоритм
 	var symmetricAlgorithm algorithm.SymmetricAlgorithm
-	if algorithmName == "loki97" {
-		symmetricAlgorithm = &algorithm.Loki97{}
-	} else if algorithmName == "rc5" {
+	if algorithmName == "rc5" {
 		symmetricAlgorithm = algorithm.NewRC5()
 	} else {
 		log.Fatalf("Неизвестный алгоритм: %s", algorithmName)

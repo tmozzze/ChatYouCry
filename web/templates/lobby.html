@@ -7,47 +7,147 @@
     <!-- Подключение Bootstrap CSS для стилизации (опционально) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Ваши стили */
+        /* Глобальные стили */
+        body {
+            background-color: #121212; /* Темный фон */
+            color: #e0e0e0; /* Светлый текст */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1, h2 {
+            color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        /* Карточки чатов */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li a {
+            display: block;
+            background-color: #1e1e1e;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            color: #90caf9; /* Синий цвет ссылок */
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        ul li a:hover {
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        /* Кнопки */
+        .btn {
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #1e88e5;
+            border-color: #1e88e5;
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+
+        .btn-danger {
+            background-color: #e53935;
+            border-color: #e53935;
+        }
+
+        .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        /* Приглашения */
+        .alert-info {
+            background-color: #1e1e1e;
+            color: #90caf9;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .alert-info strong {
+            color: #f0f0f0;
+        }
+
+        /* Уведомления (Toasts) */
+        .toast {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+
+        .toast-header {
+            background-color: #333;
+            color: #90caf9;
+        }
+
+        /* Контейнер приглашений и чатов */
+        .container {
+            margin-top: 40px;
+        }
+
+        /* Отступы для кнопок */
+        .mt-3, .mt-4 {
+            margin-top: 20px !important;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1>Добро пожаловать, {{.username}}</h1>
+    <div class="container">
+        <h1 class="mb-4">Добро пожаловать, {{.username}}</h1>
 
-        <h2>Ваши чаты</h2>
-        <ul>
-            {{range .chats}}
-                <li><a href="/messenger/chat?room_id={{.RoomID}}">{{.ChatName}}</a></li>
-            {{else}}
-                <li>Нет чатов.</li>
-            {{end}}
-        </ul>
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-3">Ваши чаты</h2>
+                <ul id="chats-list">
+                    {{range .chats}}
+                        <li onclick="window.location.href='/messenger/chat?room_id={{.RoomID}}'">
+                            <a href="/messenger/chat?room_id={{.RoomID}}">{{.ChatName}}</a>
+                        </li>
+                    {{else}}
+                        <li>Нет чатов.</li>
+                    {{end}}
+                </ul>
 
-        <!-- Кнопка для создания чата -->
-        <a href="/messenger/create_chat">
-            <button class="btn btn-primary">Создать новый чат</button>
-        </a>
+                <!-- Кнопка для создания чата -->
+                <a href="/messenger/create_chat" class="btn btn-primary mt-3">Создать новый чат</a>
+            </div>
 
-        <h2>Приглашения</h2>
-        <div id="invitations-container">
-            {{range .invitations}}
-                <div class="alert alert-info">
-                    <strong>Комната:</strong> {{.ChatName}} (ID: {{.ChatID}}), <strong>От:</strong> {{.InviterUsername}}
-                    <button class="btn btn-success btn-sm ml-2 accept-invitation" data-id="{{.ID}}">Принять</button>
-                    <button class="btn btn-danger btn-sm ml-2 decline-invitation" data-id="{{.ID}}">Отклонить</button>
+            <div class="col-md-6">
+                <h2 class="mb-3">Приглашения</h2>
+                <div id="invitations-container">
+                    {{range .invitations}}
+                        <div class="alert alert-info">
+                            <strong>Комната:</strong> {{.ChatName}} (ID: {{.ChatID}}), <strong>От:</strong> {{.InviterUsername}}
+                            <button class="btn btn-success btn-sm ml-2 accept-invitation" data-id="{{.ID}}">Принять</button>
+                            <button class="btn btn-danger btn-sm ml-2 decline-invitation" data-id="{{.ID}}">Отклонить</button>
+                        </div>
+                    {{else}}
+                        <p>Нет приглашений.</p>
+                    {{end}}
                 </div>
-            {{else}}
-                <p>Нет приглашений.</p>
-            {{end}}
+                <button onclick="loadInvitations()" class="btn btn-secondary mt-2">Обновить приглашения</button>
+            </div>
         </div>
-        <button onclick="loadInvitations()" class="btn btn-secondary mt-2">Обновить приглашения</button>
 
         <!-- Notification Container -->
         <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 10px; right: 10px; min-width: 300px;">
             <div id="notification-container" style="position: absolute; top: 0; right: 0;"></div>
         </div>
 
-        <a href="/messenger/logout" class="btn btn-danger mt-3">Выйти из профиля</a>
+        <a href="/messenger/logout" class="btn btn-danger mt-4">Выйти из профиля</a>
     </div>
 
     <!-- Подключение jQuery и Bootstrap JS для обработки AJAX и уведомлений -->
@@ -55,7 +155,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
-
             // Функция для загрузки приглашений
             function loadInvitations() {
                 $.ajax({
@@ -99,6 +198,7 @@
                         id: invitationId,
                         action: 'accepted'
                     },
+
                     success: function(response) {
                         showNotification('Успех', response.message);
                         // Перенаправляем пользователя на страницу чата
@@ -117,6 +217,7 @@
             // Обработка отклонения приглашения
             $(document).on('click', '.decline-invitation', function() {
                 const invitationId = $(this).data('id');
+                const invitationElement = $(this).closest('.alert'); // Находим родительский элемент приглашения
 
                 $.ajax({
                     url: '/messenger/respond_invitation',
@@ -127,8 +228,11 @@
                     },
                     success: function(response) {
                         showNotification('Успех', response.message);
-                        // Перенаправляем пользователя на страницу меню чатов
-                        window.location.href = response.redirect_url;
+                        // Удаляем приглашение из интерфейса
+                        invitationElement.remove();
+
+                        // Удаляем чат из списка чатов (если чат был удален у отправителя)
+                        removeChatFromList(response.chat_id);
                     },
                     error: function(xhr) {
                         let errorMsg = 'Произошла ошибка';
@@ -139,6 +243,11 @@
                     }
                 });
             });
+
+            // Удаление чата из списка чатов
+            function removeChatFromList(chatID) {
+                $(`#chats-list li a[href*="/messenger/chat?room_id=${chatID}"]`).closest('li').remove();
+            }
 
             // Устанавливаем соединение WebSocket для уведомлений (если реализовано)
             const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -157,6 +266,7 @@
                             showNotification('Приглашение принято', `${notification.sender} принял ваше приглашение в комнату "${notification.chat_name}" (ID: ${notification.chat_id})`);
                         } else if (notification.type === 'invitation_declined') {
                             showNotification('Приглашение отклонено', `${notification.sender} отклонил ваше приглашение в комнату "${notification.chat_name}" (ID: ${notification.chat_id})`);
+                            removeChatFromList(notification.chat_id); // Удаляем чат из списка
                         }
                     }
                 } catch (error) {

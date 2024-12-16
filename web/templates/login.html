@@ -5,6 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Вход - Secret Chat</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Глобальные стили */
+        body {
+            background-color: #121212; /* Темный фон */
+            color: #e0e0e0; /* Светлый текст */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            color: #f0f0f0; /* Светлый заголовок */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Форма входа */
+        .form-group label {
+            color: #f0f0f0; /* Светлый текст для лейблов */
+        }
+
+        .form-control {
+            background-color: #1e1e1e; /* Темный фон для полей ввода */
+            color: #e0e0e0; /* Светлый текст в полях ввода */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 20px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #1e88e5; /* Синяя рамка при фокусе */
+            background-color: #1e1e1e; /* Сохраняем темный фон */
+            color: #e0e0e0; /* Сохраняем светлый текст */
+        }
+
+        /* Кнопки */
+        .btn {
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #1e88e5; /* Синяя кнопка */
+            border-color: #1e88e5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0; /* Темно-синяя кнопка при наведении */
+            border-color: #1565c0;
+        }
+
+        /* Сообщения */
+        .alert {
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background-color: #2e7d32; /* Зеленый фон для успешных сообщений */
+            color: #e0e0e0;
+            border: 1px solid #1b5e20;
+        }
+
+        .alert-danger {
+            background-color: #c62828; /* Красный фон для ошибок */
+            color: #e0e0e0;
+            border: 1px solid #b71c1c;
+        }
+
+        /* Ссылки */
+        a {
+            color: #90caf9; /* Синий цвет ссылок */
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #ffffff; /* Светлый цвет при наведении */
+        }
+
+        /* Контейнер */
+        .container {
+            margin-top: 40px;
+            max-width: 400px;
+        }
+
+        /* Отступы */
+        .mt-3, .mt-4 {
+            margin-top: 20px !important;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -15,6 +109,11 @@
             {{end}}
             {{if .error}}
                 <div class="alert alert-danger">{{.error}}</div>
+            {{end}}
+
+            <!-- Обработка ошибки из URL -->
+            {{if .errorFromURL}}
+                <div class="alert alert-danger">{{.errorFromURL}}</div>
             {{end}}
         </div>
         <form id="login-form" action="/login" method="post" class="mt-4">
@@ -32,5 +131,15 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Обработка ошибки из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorParam = urlParams.get('error');
+
+        if (errorParam === 'username_or_password_incorrect') {
+            const errorMessage = 'Неправильный логин или пароль. Попробуйте снова.';
+            $('#message').append(`<div class="alert alert-danger">${errorMessage}</div>`);
+        }
+    </script>
 </body>
 </html>
