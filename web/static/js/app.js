@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     room_id: roomID
                 };
                 socket.send(JSON.stringify(msg));
-                appendMessage("Вы:", message, new Date().toLocaleString());
+                appendMessage('Вы: ', message, new Date().toLocaleString());
                 messageInput.value = '';
             }
         });
@@ -357,13 +357,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Пример структуры для отображения сообщения
         messageElement.innerHTML = `
             <div class="message-header">
-                <strong>${sender}</strong> <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: gray;">${timestamp}</span>
+                <strong>${sender}</strong> <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: #90caf9;">${timestamp}</span>
             </div>
         `;
     
         messagesDiv.prepend(messageElement);
 
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        messagesDiv.scrollBottom = messagesDiv.scrollHeight;
     }
 
 

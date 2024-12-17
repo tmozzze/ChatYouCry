@@ -31,7 +31,7 @@ func LobbyHandler(c *gin.Context) {
 	var userID int
 	err := db.QueryRowContext(context.Background(), "SELECT id FROM users WHERE username = $1", username).Scan(&userID)
 	if err == sql.ErrNoRows {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Пользователь не найден"})
+		c.HTML(http.StatusNotFound, "login.html", gin.H{"error": "Пользователь не найден"})
 		return
 	} else if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка базы данных"})

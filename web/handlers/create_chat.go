@@ -36,6 +36,11 @@ func CreateChat(c *gin.Context) {
 		return
 	}
 
+	if inviteeUsername == c.GetString("username") {
+		c.HTML(http.StatusBadRequest, "create_chat.html", gin.H{"error": "Нельзя отправлять приглашение самому себе"})
+		return
+	}
+
 	// Получаем имя пользователя из контекста (из JWT или сессии)
 	inviterUsernameVal, exists := c.Get("username")
 	if !exists {
