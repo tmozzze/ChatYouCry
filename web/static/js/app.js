@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     room_id: roomID
                 };
                 socket.send(JSON.stringify(msg));
-                appendMessage('Вы: ', message, new Date().toLocaleString());
+                appendMessage('вы', message, new Date().toLocaleString());
                 messageInput.value = '';
             }
         });
@@ -349,17 +349,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Функция добавления сообщения в раздел сообщений
-    // Функция добавления сообщения в раздел сообщений
     function appendMessage(sender, message, timestamp = new Date().toLocaleString()) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message-item');
     
-        // Пример структуры для отображения сообщения
         messageElement.innerHTML = `
-            <div class="message-header">
-                <strong>${sender}</strong> <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: #90caf9;">${timestamp}</span>
-            </div>
-        `;
+        <div class="message-header" style="margin-bottom: 8px;">
+            <strong style="color: #90caf9;">${sender}</strong>: 
+            <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: gray;">${timestamp}</span>
+        </div>
+`;
     
         messagesDiv.prepend(messageElement);
 
