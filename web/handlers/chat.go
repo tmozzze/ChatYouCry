@@ -11,6 +11,8 @@ import (
 	"log"
 	"math/big"
 	"net/http"
+	"sort"
+	"time"
 
 	"github.com/tmozzze/ChatYouCry/algorithm"
 	chatpb "github.com/tmozzze/ChatYouCry/proto/chatpb"
@@ -19,9 +21,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ChatHandler обрабатывает отображение страницы чата
-// web/handlers/chat.go
+func parseCreatedAt(createdAtStr string) (time.Time, error) {
+	return time.Parse(time.RFC3339, createdAtStr)
+}
 
+// ChatHandler обрабатывает отображение страницы чата
 func ChatHandler(c *gin.Context) {
 	log.Println("Вход в чат")
 	roomID := c.DefaultQuery("room_id", "")
@@ -156,8 +160,7 @@ func ChatHandler(c *gin.Context) {
 		return
 	}
 
-	//дешифровка истории сообщений
-
+	// Дешифровка истории сообщений
 	decryptedMessages := make([]*chatpb.MessageRecord, 0, len(historyResp.Messages))
 	for _, msg := range historyResp.Messages {
 		decryptedMessage, err := cipherContext.Decrypt(msg.GetEncryptedMessage())
@@ -171,9 +174,23 @@ func ChatHandler(c *gin.Context) {
 		decryptedMessages = append(decryptedMessages, &newMsg)
 	}
 
+	// Сортируем сообщения по дате (от старых к новым)
+	sort.Slice(decryptedMessages, func(i, j int) bool {
+		createdAtI, err := parseCreatedAt(decryptedMessages[i].GetCreatedAt())
+		if err != nil {
+			log.Printf("Ошибка при сортировке сообщений: %v", err)
+		}
+		createdAtJ, err := parseCreatedAt(decryptedMessages[j].GetCreatedAt())
+		if err != nil {
+			log.Printf("Ошибка при сортировке сообщений: %v", err)
+		}
+		return createdAtI.Before(createdAtJ)
+	})
+
 	c.HTML(http.StatusOK, "chat.html", gin.H{
-		"room_id":  roomID,
-		"messages": decryptedMessages,
+		"room_id":       roomID,
+		"messages":      decryptedMessages,
+		"currentUserId": username,
 	})
 }
 

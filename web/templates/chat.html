@@ -81,6 +81,25 @@
             height: 400px;
         }
         
+        /* Стили для сообщений текущего пользователя */
+        .message.current-user {
+            text-align: right;
+            background-color: #1e88e5; /* Синий фон для сообщений текущего пользователя */
+            color: #ffffff; /* Белый текст */
+            border-radius: 8px;
+            padding: 10px;
+            margin-left: 50%;
+        }
+
+        /* Стили для сообщений собеседника */
+        .message.other-user {
+            text-align: left;
+            background-color: #333; /* Темный фон для сообщений собеседника */
+            color: #e0e0e0; /* Светлый текст */
+            border-radius: 8px;
+            padding: 10px;
+            margin-right: 50%;
+        }
 
         .message {
             margin-bottom: 10px;
@@ -153,16 +172,29 @@
 
         
 
+
         <!-- Раздел для отображения сообщений -->
         <h2>Сообщения</h2>
         <div id="messages" class="border p-3" style="height: 400px; overflow-y: scroll;">
             {{if .messages}}
                 {{range .messages}}
-                    <div class="message mb-2">
-                        <strong>{{.SenderId}}</strong>: 
-                        <span>{{printf "%s" .EncryptedMessage}}</span> 
-                        <span class="text-muted" style="font-size: 0.8em;">{{.CreatedAt}}</span>
-                    </div>
+                    {{if eq .SenderId $.currentUserId}}
+                        <div class="message current-user mb-2">
+                            <strong>Вы:</strong>
+                            <span>{{printf "%s" .EncryptedMessage}}</span> 
+                            <div>
+                                <span class="text-muted" style="font-size: 0.8em;">{{.CreatedAt}}</span>
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="message other-user mb-2">
+                            <strong>{{.SenderId}}</strong>: 
+                            <span>{{printf "%s" .EncryptedMessage}}</span> 
+                            <div>
+                                <span class="text-muted" style="font-size: 0.8em;">{{.CreatedAt}}</span>
+                            </div>                        
+                        </div>
+                    {{end}}
                 {{end}}
             {{else}}
                 <p>Нет сообщений в этой комнате.</p>
@@ -191,5 +223,9 @@
     <!-- Подключение jQuery и Bootstrap JS для стилизации и взаимодействия -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Передаем currentUserId в JavaScript
+        const currentUserId = "{{.currentUserId}}";
+    </script>
 </body>
 </html>

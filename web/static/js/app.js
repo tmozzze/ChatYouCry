@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
+        const date = new Date();
         return date.toLocaleString('ru-RU', {
             year: 'numeric',
             month: '2-digit',
@@ -155,14 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const msg = {
                     type: "chat",
                     content: message,
-                    room_id: roomID
+                    room_id: roomID,
                 };
                 socket.send(JSON.stringify(msg));
-                appendMessage('вы', message, new Date().toLocaleString());
+                addMessage(currentUserId, message, Date.toLocaleString());
                 messageInput.value = '';
             }
         });
     }
+
 
     // Обработка выхода из системы
     if (logoutButton) {
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
         // Функция для отображения уведомлений с помощью Bootstrap Toasts
-    function showNotification(title, message, type = 'info') {
+    function showNotification(title, response, type = 'info') {
         const notificationContainer = document.getElementById('notification-container');
 
         const toastId = `toast-${Date.now()}`;
@@ -232,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 </div>
                <div class="toast-body">
-                    ${message}
+                    ${response}
                 </div>
             </div>
         `;
@@ -330,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
                 if (data.type === "chat") {
                     const { sender, content, timestamp } = data; // Извлекаем отправителя, сообщение и время
-                    appendMessage(sender, content, timestamp);
+                    addMessage(sender, content, timestamp);
                 } else if (data.type === "chat_deleted") {
                     showNotification('Чат удалён', 'Комната, в которой вы находитесь, была удалена.', 'warning');
                     window.location.href = '/messenger/lobby';
@@ -347,22 +348,25 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("WebSocket ошибка:", error);
         };
     }
-
-    // Функция добавления сообщения в раздел сообщений
-    function appendMessage(sender, message, timestamp = new Date().toLocaleString()) {
+    function addMessage(senderId, message, timestamp) {
+        const messagesContainer = document.getElementById('messages');
         const messageElement = document.createElement('div');
-        messageElement.classList.add('message-item');
+        const isCurrentUser = senderId === currentUserId; // Убедитесь, что currentUserId определен
+        // Добавляем класс в зависимости от отправителя
+        messageElement.classList.add('message', isCurrentUser ? 'current-user' : 'other-user');
     
+        // Создаем HTML-структуру сообщения
         messageElement.innerHTML = `
-        <div class="message-header" style="margin-bottom: 8px;">
-            <strong style="color: #90caf9;">${sender}</strong>: 
-            <span class="message-body">${escapeHtml(message)} <span style="font-size: 0.8em; color: gray;">${timestamp}</span>
-        </div>
-`;
+            <strong>${isCurrentUser ? 'Вы:' : senderId}:</strong> 
+            <span>${escapeHtml(message)}</span> 
+            <span class="text-muted" style="font-size: 0.8em;>${timestamp}</span>
+        `;
     
-        messagesDiv.prepend(messageElement);
-
-        messagesDiv.scrollBottom = messagesDiv.scrollHeight;
+        // Добавляем сообщение в контейнер
+        messagesContainer.appendChild(messageElement);
+    
+        // Прокручиваем контейнер вниз
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
 

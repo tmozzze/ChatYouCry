@@ -6,7 +6,6 @@ import (
 	"fmt"
 )
 
-// Magenta представляет алгоритм шифрования Magenta
 type Magenta struct {
 	S []uint64 // Расширенный ключ
 	r int      // Количество раундов
@@ -14,12 +13,11 @@ type Magenta struct {
 	b int      // Длина ключа в байтах
 }
 
-// NewMagenta создает новый экземпляр Magenta с параметрами по умолчанию
 func NewMagenta() *Magenta {
 	return &Magenta{
-		r: 12, // Количество раундов (можно менять)
+		r: 12, // Количество раундов
 		w: 64, // Размер слова в битах (16, 32, 64)
-		b: 16, // Длина ключа в байтах (можно менять)
+		b: 16, // Длина ключа в байтах
 	}
 }
 
@@ -33,7 +31,6 @@ func (m *Magenta) SetKey(key []byte) error {
 	return nil
 }
 
-// Encrypt шифрует данные
 func (m *Magenta) Encrypt(data []byte) ([]byte, error) {
 	blockSize := m.w / 4 // Размер блока в байтах
 	if len(data)%int(blockSize) != 0 {
@@ -52,7 +49,6 @@ func (m *Magenta) Encrypt(data []byte) ([]byte, error) {
 	return encrypted, nil
 }
 
-// Decrypt дешифрует данные
 func (m *Magenta) Decrypt(data []byte) ([]byte, error) {
 	blockSize := m.w / 4 // Размер блока в байтах
 	if len(data)%int(blockSize) != 0 {
@@ -71,7 +67,6 @@ func (m *Magenta) Decrypt(data []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-// encryptBlock шифрует один блок данных
 func (m *Magenta) encryptBlock(block []byte) ([]byte, error) {
 	wordSizeBytes := m.w / 8 // Размер слова в байтах
 	if len(block) != int(wordSizeBytes*2) {
@@ -92,7 +87,6 @@ func (m *Magenta) encryptBlock(block []byte) ([]byte, error) {
 	return encryptedBlock, nil
 }
 
-// decryptBlock дешифрует один блок данных
 func (m *Magenta) decryptBlock(block []byte) ([]byte, error) {
 	wordSizeBytes := m.w / 8 // Размер слова в байтах
 	if len(block) != int(wordSizeBytes*2) {
