@@ -136,16 +136,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function formatTimestamp(timestamp) {
-        const date = new Date();
-        return date.toLocaleString('ru-RU', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
+        if (!timestamp) {
+            return "Неверный формат времени"; // Возвращаем сообщение об ошибке
+        }
+    
+        const date = new Date(timestamp);
+    
+        if (isNaN(date.getTime())) { // Проверяем, является ли дата валидной
+            return "Неверный формат времени"; // Или верните пустую строку
+        }
+    
+        // Формируем дату в нужном формате
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы от 0 до 11
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+        // Возвращаем строку в нужном формате
+        return `${year}.${month}.${day}, ${hours}:${minutes}:${seconds}`;
     }
+    
+    
+    
+    
 
     // Обработка отправки сообщения через WebSocket
     if (sendMessageButton) {
@@ -158,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     room_id: roomID,
                 };
                 socket.send(JSON.stringify(msg));
-                addMessage(currentUserId, message, Date.toLocaleString());
+                addMessage(currentUserId, message);
                 messageInput.value = '';
             }
         });
@@ -327,14 +342,26 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             socket.onmessage = function(event) {
-                const data = JSON.parse(event.data); // Разбираем JSON
-            
-                if (data.type === "chat") {
-                    const { sender, content, timestamp } = data; // Извлекаем отправителя, сообщение и время
-                    addMessage(sender, content, timestamp);
-                } else if (data.type === "chat_deleted") {
-                    showNotification('Чат удалён', 'Комната, в которой вы находитесь, была удалена.', 'warning');
-                    window.location.href = '/messenger/lobby';
+                try {
+                    const data = JSON.parse(event.data); // Разбираем JSON
+                    console.log("Получено сообщение через WebSocket:", data);
+    
+                    // Проверяем, что данные содержат корректные поля
+                    if (data && data.type === "chat") {
+                        const { sender, content, timestamp } = data; // Извлекаем отправителя, текст сообщения и время
+                        if (sender && content && timestamp) {
+                            addMessage(sender, content, timestamp); // Добавляем сообщение в интерфейс
+                        } else {
+                            console.warn("Получено некорректное сообщение:", data);
+                        }
+                    } else if (data.type === "chat_deleted") {
+                        showNotification('Чат удалён', 'Комната, в которой вы находитесь, была удалена.', 'warning');
+                        window.location.href = '/messenger/lobby';
+                    } else {
+                        console.warn("Неизвестный тип сообщения:", data.type);
+                    }
+                } catch (err) {
+                    console.error("Ошибка при разборе сообщения WebSocket:", err);
                 }
             };
         }
@@ -348,18 +375,22 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("WebSocket ошибка:", error);
         };
     }
-    function addMessage(senderId, message, timestamp) {
+    function addMessage(senderId, message) {
         const messagesContainer = document.getElementById('messages');
         const messageElement = document.createElement('div');
         const isCurrentUser = senderId === currentUserId; // Убедитесь, что currentUserId определен
         // Добавляем класс в зависимости от отправителя
+        const formattedTimestamp = formatTimestamp(new Date().toISOString()); // Форматируем время
+
         messageElement.classList.add('message', isCurrentUser ? 'current-user' : 'other-user');
     
         // Создаем HTML-структуру сообщения
         messageElement.innerHTML = `
-            <strong>${isCurrentUser ? 'Вы:' : senderId}:</strong> 
-            <span>${escapeHtml(message)}</span> 
-            <span class="text-muted" style="font-size: 0.8em;>${timestamp}</span>
+            <strong>${isCurrentUser ? 'Вы' : senderId}:</strong> 
+            <span style="word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">${escapeHtml(message)}</span> 
+            <div>
+                <span class="text-muted" style="font-size: 0.8em;">${formattedTimestamp}</span>
+            </div>
         `;
     
         // Добавляем сообщение в контейнер
@@ -368,6 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Прокручиваем контейнер вниз
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-
-
+    function notifyUserJoined(roomID) {
+        const message = JSON.stringify({ type: "user_joined", roomID });
+        socket.send(message);
+    }
+    
 });

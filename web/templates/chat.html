@@ -180,8 +180,8 @@
                 {{range .messages}}
                     {{if eq .SenderId $.currentUserId}}
                         <div class="message current-user mb-2">
-                            <strong>Вы:</strong>
-                            <span>{{printf "%s" .EncryptedMessage}}</span> 
+                            <strong style="color: #90caf9;"> Вы:</strong>
+                            <span style="word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">{{printf "%s" .EncryptedMessage}}</span> 
                             <div>
                                 <span class="text-muted" style="font-size: 0.8em;">{{.CreatedAt}}</span>
                             </div>
@@ -189,7 +189,7 @@
                     {{else}}
                         <div class="message other-user mb-2">
                             <strong>{{.SenderId}}</strong>: 
-                            <span>{{printf "%s" .EncryptedMessage}}</span> 
+                            <span style="word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">{{printf "%s" .EncryptedMessage}}</span> 
                             <div>
                                 <span class="text-muted" style="font-size: 0.8em;">{{.CreatedAt}}</span>
                             </div>                        
@@ -200,6 +200,7 @@
                 <p>Нет сообщений в этой комнате.</p>
             {{end}}
         </div>
+        
 
         <h2>Загрузить файл</h2>
         <form id="file-upload-form" enctype="multipart/form-data">

@@ -144,7 +144,7 @@ func SendInvitationHandler(c *gin.Context) {
 		// Не обязательно возвращать ошибку, если уведомление не отправлено
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Приглашение отправлено"})
+	c.JSON(http.StatusOK, gin.H{"response": "Приглашение отправлено"})
 }
 
 // getChatName возвращает название чата по его ID
@@ -378,7 +378,7 @@ func RespondInvitationHandler(c *gin.Context) {
 		// --- Конец генерации ключей ---
 
 		redirectURL := "/messenger/chat?room_id=" + roomID
-		c.JSON(http.StatusOK, gin.H{"message": "Приглашение принято, вы присоединились к комнате", "redirect_url": redirectURL})
+		c.JSON(http.StatusOK, gin.H{"response": "Приглашение принято, вы присоединились к комнате", "redirect_url": redirectURL})
 
 	} else if action == "declined" {
 		// Обновляем статус приглашения на 'declined'
@@ -414,7 +414,7 @@ func RespondInvitationHandler(c *gin.Context) {
 			}
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "Приглашение отклонено", "redirect_url": "/messenger/lobby"})
+		c.JSON(http.StatusOK, gin.H{"response": "Приглашение отклонено", "redirect_url": "/messenger/lobby"})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Некорректное действие"})
 	}

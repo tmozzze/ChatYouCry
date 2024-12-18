@@ -22,7 +22,9 @@ import (
 )
 
 func parseCreatedAt(createdAtStr string) (time.Time, error) {
-	return time.Parse(time.RFC3339, createdAtStr)
+	// Указываем формат, соответствующий входящим данным
+	const layout = "2006.01.02, 15:04:05"
+	return time.Parse(layout, createdAtStr)
 }
 
 // ChatHandler обрабатывает отображение страницы чата
@@ -184,6 +186,8 @@ func ChatHandler(c *gin.Context) {
 		if err != nil {
 			log.Printf("Ошибка при сортировке сообщений: %v", err)
 		}
+
+		// Для сортировки от старых к новым: i должно быть меньше j
 		return createdAtI.Before(createdAtJ)
 	})
 

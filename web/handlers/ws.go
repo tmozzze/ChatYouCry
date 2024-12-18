@@ -133,7 +133,7 @@ func WebSocketHandler(c *gin.Context) {
 				"sender":    senderID,
 				"content":   string(content),
 				"room_id":   roomID,
-				"timestamp": time.Now().Format("2006-01-02 15:04:05"),
+				"timestamp": time.Now().Format("02.01.2006, 15:04:05"),
 			})
 			if err != nil {
 				log.Println("Ошибка при отправке сообщения в WebSocket:", err)

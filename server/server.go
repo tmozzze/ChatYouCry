@@ -655,7 +655,7 @@ func (s *ChatServer) GetRoomHistory(ctx context.Context, req *chatpb.GetRoomHist
 	for rows.Next() {
 		var senderID string
 		var encryptedMessage []byte
-		var createdAt string // Можно использовать time.Time и потом конвертировать в строку
+		var createdAt time.Time // Можно использовать time.Time и потом конвертировать в строку
 
 		if err := rows.Scan(&senderID, &encryptedMessage, &createdAt); err != nil {
 			return nil, status.Errorf(codes.Internal, "Ошибка при чтении строки: %v", err)
@@ -664,7 +664,7 @@ func (s *ChatServer) GetRoomHistory(ctx context.Context, req *chatpb.GetRoomHist
 		messages = append(messages, &chatpb.MessageRecord{
 			SenderId:         senderID,
 			EncryptedMessage: encryptedMessage,
-			CreatedAt:        createdAt,
+			CreatedAt:        createdAt.Format("2006.01.02, 15:04:05"),
 		})
 	}
 
